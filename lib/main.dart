@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'parser.dart'
 
 main() {
   runApp(MyApp());
@@ -144,6 +145,24 @@ class _MainPageState extends State<MainPage> {
       ), */
     );
   }
+  String calcInput() {
+    print("inputValue: $input");
+    final result = buildParser().parse(input);
+    if (result.isSuccess) {
+      print(result.value);
+      setState(() {
+        answer = result.value.toString();
+      });
+      return result.value.toString();
+    } else {
+      setState(() {
+        answer = "Syntax Error";
+      });
+    }
+    print("Syntax Error $result");
+    return "Syntax Error";
+  }
+
 
   void handleKeyOnPressed({required String keypad}) {
     setState(() {
@@ -160,12 +179,12 @@ class _MainPageState extends State<MainPage> {
         else
           input += keypad;
       } else if (keypad == ".") {
-        if (input.isEmpty) {
-          input = "0.";
-        } else if (!input.contains(".")) {
-          input += keypad;
-        }
-      } else {
+        if (input.isEmpty) input = "0.";
+        else if (!input.contains(".")) input += keypad;
+        
+      }else if(keypad == "="){
+          calcInput();
+        } else {
         input += keypad;
       }
     });
